@@ -1,6 +1,8 @@
 var webpack = require('webpack');
 var path = require('path');
 
+var TSLintPlugin = require('tslint-webpack-plugin');
+
 // variables
 var isProduction = process.argv.indexOf('-p') >= 0;
 var sourcePath = path.join(__dirname, './src');
@@ -96,6 +98,9 @@ module.exports = {
     }),
     new HtmlWebpackPlugin({
       template: 'index.html'
+	 }),
+    new TSLintPlugin({
+      files: ['./src/**/*.ts']
     })
   ],
   devServer: {
