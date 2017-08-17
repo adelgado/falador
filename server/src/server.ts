@@ -15,6 +15,7 @@ import * as path from 'path'
 import * as mongoose from 'mongoose'
 import * as passport from 'passport'
 import expressValidator = require('express-validator')
+const { ExpressPeerServer } = require('peer')
 
 
 const MongoStore = mongo(session)
@@ -148,9 +149,21 @@ app.use(errorHandler())
 /**
  * Start Express server.
  */
-app.listen(app.get('port'), () => {
+const server = app.listen(app.get('port'), () => {
 	console.log(('  App is running at http://localhost:%d in %s mode'), app.get('port'), app.get('env'))
 	console.log('  Press CTRL-C to stop\n')
 })
+
+
+/**
+ * PeerJS routes
+ */
+
+const options = {
+	debug: true
+}
+
+app.use('/peerjs', ExpressPeerServer(server, options))
+
 
 module.exports = app
