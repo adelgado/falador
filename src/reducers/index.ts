@@ -1,10 +1,10 @@
 import { combineReducers } from 'redux'
-import todos from './todos'
+import chat from './chat'
 
 export interface IRootState {
-	todos: TodoStoreState
+	chat: ChatStoreState
 }
 
 export default combineReducers<IRootState>({
-	todos
+	chat
 })

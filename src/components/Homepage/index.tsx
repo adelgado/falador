@@ -3,12 +3,9 @@ import * as style from './style.css'
 
 export namespace Homepage {
 	export interface IProps {
-		/* empty */
+		onCreateRoom(): void
 	}
-
-	export interface IState {
-		/* empty */
-	}
+	export interface IState { }
 }
 
 export class Homepage extends React.Component<Homepage.IProps, Homepage.IState> {
@@ -17,10 +14,19 @@ export class Homepage extends React.Component<Homepage.IProps, Homepage.IState> 
 		super(props, context)
 	}
 
+	handleCreateRoom(): void {
+		this.props.onCreateRoom()
+	}
+
 	render(): JSX.Element {
 		return (
 			<div className={style.container}>
-				<button className={style.button}>New room</button>
+				<button
+					className={style.button}
+					onClick={this.handleCreateRoom.bind(this)}
+				>
+					New room
+				</button>
 			</div>
 		)
 	}
