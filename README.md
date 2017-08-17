@@ -3,21 +3,15 @@
 
 ## Setup
 
-```
-$ npm install
-```
+	$ make setup
 
 ## Running
 
-```
-$ npm start
-```
+	$ make run-client
 
 ## Build
 
-```
-$ npm run build
-```
+	$ make build-client
 
 # License
 
