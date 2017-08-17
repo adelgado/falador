@@ -13,7 +13,7 @@ export class Room extends React.Component<Room.IProps, Room.IState> {
 
 	render(): JSX.Element {
 		return (
-			<div className={style.number}>{this.props.id}</div>
+			<div className={style.number}>Welcome to room {this.props.id}</div>
 		)
 	}
 }
