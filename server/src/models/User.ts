@@ -3,78 +3,101 @@ import * as crypto from 'crypto'
 import * as mongoose from 'mongoose'
 
 export type UserModel = mongoose.Document & {
-	email: string,
-	password: string,
-	passwordResetToken: string,
-	passwordResetExpires: Date,
+	email: string
+	password: string
+	passwordResetToken: string
+	passwordResetExpires: Date
 
-	facebook: string,
-	tokens: AuthToken[],
+	facebook: string
+	tokens: IAuthToken[]
 
 	profile: {
-		name: string,
-		gender: string,
-		location: string,
-		website: string,
+		name: string
+		gender: string
+		location: string
+		website: string
 		picture: string
-	},
+	}
 
-	comparePassword: (candidatePassword: string, cb: (err: any, isMatch: any) => {}) => void,
+	comparePassword: (
+		candidatePassword: string,
+		cb: (err: any, isMatch: any) => {}
+	) => void
 	gravatar: (size: number) => string
 }
 
-export type AuthToken = {
-	accessToken: string,
+export interface IAuthToken {
+	accessToken: string
 	kind: string
 }
 
-const userSchema = new mongoose.Schema({
-	email: { type: String, unique: true },
-	password: String,
-	passwordResetToken: String,
-	passwordResetExpires: Date,
+const userSchema = new mongoose.Schema(
+	{
+		email: { type: String, unique: true },
+		password: String,
+		passwordResetToken: String,
+		passwordResetExpires: Date,
 
-	facebook: String,
-	twitter: String,
-	google: String,
-	tokens: Array,
+		facebook: String,
+		twitter: String,
+		google: String,
+		tokens: Array,
 
-	profile: {
-		name: String,
-		gender: String,
-		location: String,
-		website: String,
-		picture: String
-	}
-}, { timestamps: true })
+		profile: {
+			name: String,
+			gender: String,
+			location: String,
+			website: String,
+			picture: String
+		}
+	},
+	{ timestamps: true }
+)
 
 /**
  * Password hash middleware.
  */
 userSchema.pre('save', function save(next: (err?: any) => void): void {
-	const user = this
-	if (!user.isModified('password')) { return next() }
+	const user = this // tslint:disable-line no-this-assignment
+	if (!user.isModified('password')) {
+		return next()
+	}
 	bcrypt.genSalt(10, (err, salt) => {
-		if (err) { return next(err) }
-		bcrypt.hash(user.password, salt, () => (void 0), (err: mongoose.Error, hash) => {
-			if (err) { return next(err) }
-			user.password = hash
-			next()
-		})
+		if (err) {
+			return next(err)
+		}
+		bcrypt.hash(
+			user.password,
+			salt,
+			() => void 0,
+			(err: mongoose.Error, hash) => {
+				if (err) {
+					return next(err)
+				}
+				user.password = hash
+				next()
+			}
+		)
 	})
 })
 
-userSchema.methods.comparePassword = function (candidatePassword: string, cb: (err: any, isMatch: any) => {}): void {
-	bcrypt.compare(candidatePassword, this.password, (err: mongoose.Error, isMatch: boolean) => {
-		cb(err, isMatch)
-	})
+userSchema.methods.comparePassword = function(
+	candidatePassword: string,
+	cb: (err: any, isMatch: any) => {}
+): void {
+	bcrypt.compare(
+		candidatePassword,
+		this.password,
+		(err: mongoose.Error, isMatch: boolean) => {
+			cb(err, isMatch)
+		}
+	)
 }
-
 
 /**
  * Helper method for getting user's gravatar.
  */
-userSchema.methods.gravatar = function (size: number): string {
+userSchema.methods.gravatar = function(size: number): string {
 	if (!size) {
 		size = 200
 	}

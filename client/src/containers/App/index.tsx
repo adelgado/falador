@@ -1,22 +1,18 @@
 import * as React from 'react'
-import * as ChatActions from '../../actions/chat'
-import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { RouteComponentProps } from 'react-router'
-import { IRootState } from '../../reducers'
+import { bindActionCreators } from 'redux'
+import * as ChatActions from '../../actions/chat'
 import { Homepage, Room } from '../../components'
+import { IRootState } from '../../reducers'
 
-export namespace App {
-	export interface IProps extends RouteComponentProps<void> {
-		actions: typeof ChatActions
-		chat: ChatStoreState
-	}
-
-	export interface IState { }
+export interface IProps extends RouteComponentProps<void> {
+	actions: typeof ChatActions
+	chat: ChatStoreState
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
-export class App extends React.Component<App.IProps, App.IState> {
+export class App extends React.Component<IProps, {}> {
 	render(): JSX.Element {
 		const room = this.props.chat.room
 
@@ -36,7 +32,7 @@ function mapStateToProps(state: IRootState): { chat: ChatStoreState } {
 	return { chat: state.chat }
 }
 
-function mapDispatchToProps(dispatch: any): { actions: Object } {
+function mapDispatchToProps(dispatch: any): { actions: object } {
 	return {
 		actions: bindActionCreators(ChatActions as any, dispatch)
 	}

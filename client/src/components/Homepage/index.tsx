@@ -1,16 +1,12 @@
 import * as React from 'react'
 import * as style from './style.css'
 
-export namespace Homepage {
-	export interface IProps {
-		onCreateRoom(): void
-	}
-	export interface IState { }
+export interface IProps {
+	onCreateRoom(): void
 }
 
-export class Homepage extends React.Component<Homepage.IProps, Homepage.IState> {
-
-	constructor(props?: Homepage.IProps, context?: any) {
+export class Homepage extends React.Component<IProps, {}> {
+	constructor(props?: IProps, context?: any) {
 		super(props, context)
 	}
 
@@ -30,5 +26,4 @@ export class Homepage extends React.Component<Homepage.IProps, Homepage.IState> 
 			</div>
 		)
 	}
-
 }

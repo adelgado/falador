@@ -1,5 +1,5 @@
-import * as nodemailer from 'nodemailer'
 import { Request, Response } from 'express'
+import * as nodemailer from 'nodemailer'
 
 const transporter = nodemailer.createTransport({
 	service: 'SendGrid',
@@ -42,7 +42,7 @@ export let postContact = (req: Request, res: Response) => {
 		text: req.body.message
 	}
 
-	transporter.sendMail(mailOptions, (err) => {
+	transporter.sendMail(mailOptions, err => {
 		if (err) {
 			req.flash('errors', { msg: err.message })
 			return res.redirect('/contact')

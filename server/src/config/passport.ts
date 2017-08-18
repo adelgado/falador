@@ -1,12 +1,12 @@
-import * as passport from 'passport'
-import * as request from 'request'
-import * as passportLocal from 'passport-local'
-import * as passportFacebook from 'passport-facebook'
 import * as _ from 'lodash'
+import * as passport from 'passport'
+import * as passportFacebook from 'passport-facebook'
+import * as passportLocal from 'passport-local'
+import * as request from 'request'
 
 // import { User, UserType } from '../models/User';
+import { NextFunction, Request, Response } from 'express'
 import { default as User } from '../models/User'
-import { Request, Response, NextFunction } from 'express'
 
 const LocalStrategy = passportLocal.Strategy
 const FacebookStrategy = passportFacebook.Strategy

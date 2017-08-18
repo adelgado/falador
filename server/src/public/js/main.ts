@@ -1,3 +1,3 @@
-$(document).ready(function (): void {
+$(document).ready(() => {
 	// Place JavaScript code here...
 })

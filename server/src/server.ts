@@ -1,22 +1,21 @@
 /**
  * Module dependencies.
  */
-import * as express from 'express'
-import * as compression from 'compression'  // compresses requests
-import * as session from 'express-session'
 import * as bodyParser from 'body-parser'
-import * as logger from 'morgan'
-import * as errorHandler from 'errorhandler'
-import * as lusca from 'lusca'
-import * as dotenv from 'dotenv'
+import * as compression from 'compression' // compresses requests
 import * as mongo from 'connect-mongo'
+import * as dotenv from 'dotenv'
+import * as errorHandler from 'errorhandler'
+import * as express from 'express'
 import * as flash from 'express-flash'
-import * as path from 'path'
-import * as mongoose from 'mongoose'
-import * as passport from 'passport'
+import * as session from 'express-session'
 import expressValidator = require('express-validator')
+import * as lusca from 'lusca'
+import * as mongoose from 'mongoose'
+import * as logger from 'morgan'
+import * as passport from 'passport'
+import * as path from 'path'
 const { ExpressPeerServer } = require('peer')
-
 
 const MongoStore = mongo(session)
 
@@ -25,14 +24,13 @@ const MongoStore = mongo(session)
  */
 dotenv.config({ path: '.env.example' })
 
-
 /**
  * Controllers (route handlers).
  */
-import * as homeController from './controllers/home'
-import * as userController from './controllers/user'
 import * as apiController from './controllers/api'
 import * as contactController from './controllers/contact'
+import * as homeController from './controllers/home'
+import * as userController from './controllers/user'
 
 /**
  * API keys and Passport configuration.
@@ -55,8 +53,6 @@ mongoose.connection.on('error', () => {
 	process.exit()
 })
 
-
-
 /**
  * Express configuration.
  */
@@ -68,15 +64,17 @@ app.use(logger('dev'))
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(expressValidator())
-app.use(session({
-	resave: true,
-	saveUninitialized: true,
-	secret: process.env.SESSION_SECRET,
-	store: new MongoStore({
-		url: process.env.MONGODB_URI || process.env.MONGOLAB_URI,
-		autoReconnect: true
+app.use(
+	session({
+		resave: true,
+		saveUninitialized: true,
+		secret: process.env.SESSION_SECRET,
+		store: new MongoStore({
+			url: process.env.MONGODB_URI || process.env.MONGOLAB_URI,
+			autoReconnect: true
+		})
 	})
-}))
+)
 app.use(passport.initialize())
 app.use(passport.session())
 app.use(flash())
@@ -89,14 +87,15 @@ app.use((req, res, next) => {
 app.use((req, res, next) => {
 	// After successful login, redirect back to the intended page
 	if (req.session) {
-		if (!req.user &&
+		if (
+			!req.user &&
 			req.path !== '/login' &&
 			req.path !== '/signup' &&
 			!req.path.match(/^\/auth/) &&
-			!req.path.match(/\./)) {
+			!req.path.match(/\./)
+		) {
 			req.session.returnTo = req.path
-		} else if (req.user &&
-			req.path === '/account') {
+		} else if (req.user && req.path === '/account') {
 			req.session.returnTo = req.path
 		}
 	}
@@ -121,25 +120,52 @@ app.post('/signup', userController.postSignup)
 app.get('/contact', contactController.getContact)
 app.post('/contact', contactController.postContact)
 app.get('/account', passportConfig.isAuthenticated, userController.getAccount)
-app.post('/account/profile', passportConfig.isAuthenticated, userController.postUpdateProfile)
-app.post('/account/password', passportConfig.isAuthenticated, userController.postUpdatePassword)
-app.post('/account/delete', passportConfig.isAuthenticated, userController.postDeleteAccount)
-app.get('/account/unlink/:provider', passportConfig.isAuthenticated, userController.getOauthUnlink)
+app.post(
+	'/account/profile',
+	passportConfig.isAuthenticated,
+	userController.postUpdateProfile
+)
+app.post(
+	'/account/password',
+	passportConfig.isAuthenticated,
+	userController.postUpdatePassword
+)
+app.post(
+	'/account/delete',
+	passportConfig.isAuthenticated,
+	userController.postDeleteAccount
+)
+app.get(
+	'/account/unlink/:provider',
+	passportConfig.isAuthenticated,
+	userController.getOauthUnlink
+)
 
 /**
  * API examples routes.
  */
 app.get('/api', apiController.getApi)
-app.get('/api/facebook', passportConfig.isAuthenticated, passportConfig.isAuthorized, apiController.getFacebook)
+app.get(
+	'/api/facebook',
+	passportConfig.isAuthenticated,
+	passportConfig.isAuthorized,
+	apiController.getFacebook
+)
 
 /**
  * OAuth authentication routes. (Sign in)
  */
-app.get('/auth/facebook', passport.authenticate('facebook', { scope: ['email', 'public_profile'] }))
-app.get('/auth/facebook/callback', passport.authenticate('facebook', { failureRedirect: '/login' }), (req, res) => {
-	res.redirect((req.session && req.session.returnTo) || '/')
-})
-
+app.get(
+	'/auth/facebook',
+	passport.authenticate('facebook', { scope: ['email', 'public_profile'] })
+)
+app.get(
+	'/auth/facebook/callback',
+	passport.authenticate('facebook', { failureRedirect: '/login' }),
+	(req, res) => {
+		res.redirect((req.session && req.session.returnTo) || '/')
+	}
+)
 
 /**
  * Error Handler. Provides full stack - remove for production
@@ -150,10 +176,13 @@ app.use(errorHandler())
  * Start Express server.
  */
 const server = app.listen(app.get('port'), () => {
-	console.log(('  App is running at http://localhost:%d in %s mode'), app.get('port'), app.get('env'))
+	console.log(
+		'  App is running at http://localhost:%d in %s mode',
+		app.get('port'),
+		app.get('env')
+	)
 	console.log('  Press CTRL-C to stop\n')
 })
-
 
 /**
  * PeerJS routes
@@ -164,6 +193,5 @@ const options = {
 }
 
 app.use('/peerjs', ExpressPeerServer(server, options))
-
 
 module.exports = app
