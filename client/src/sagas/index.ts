@@ -1,8 +1,8 @@
 import { delay } from 'redux-saga'
 import { all, ForkEffect, put, PutEffect, takeEvery } from 'redux-saga/effects'
 
-import * as Actions from './actions/chat'
-import * as Constants from './constants/actions'
+import * as Actions from '../actions/chat'
+import * as Constants from '../constants/actions'
 
 export function* helloSaga(): IterableIterator<any> {
 	console.log('Hello Sagas!')
@@ -12,8 +12,10 @@ export function* helloSaga(): IterableIterator<any> {
 export function* createRoomAsync(): IterableIterator<
 	Promise<true> | PutEffect<{ type: string }>
 > {
-	yield delay(1000)
+	yield put(Actions.startLoading())
 	yield put(Actions.createRoom())
+	yield delay(1000)
+	yield put(Actions.stopLoading())
 }
 
 // Our watcher Saga: spawn a new incrementAsync task on each INCREMENT_ASYNC

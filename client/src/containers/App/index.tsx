@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { RouteComponentProps } from 'react-router'
 import { bindActionCreators } from 'redux'
 import * as ChatActions from '../../actions/chat'
-import { Homepage, Room } from '../../components'
+import { Homepage, Loading, Room } from '../../components'
 import { IRootState } from '../../reducers'
 
 export interface IProps extends RouteComponentProps<void> {
@@ -14,17 +14,19 @@ export interface IProps extends RouteComponentProps<void> {
 @connect(mapStateToProps, mapDispatchToProps)
 export class App extends React.Component<IProps, {}> {
 	render(): JSX.Element {
-		const room = this.props.chat.room
+		const { chat } = this.props
 
-		if (room === null) {
-			return (
-				<Homepage
-					onCreateRoom={() => this.props.actions.createRoomAsync()}
-				/>
-			)
-		} else {
-			return <Room id={room.id} />
+		if (chat.loading) {
+			return <Loading />
 		}
+
+		if (chat.room) {
+			return <Room id={chat.room.id} />
+		}
+
+		return (
+			<Homepage onCreateRoom={() => this.props.actions.createRoomAsync()} />
+		)
 	}
 }
 

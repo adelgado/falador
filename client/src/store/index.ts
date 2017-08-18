@@ -3,7 +3,7 @@ import createSagaMiddleware from 'redux-saga'
 import { logger } from '../middleware'
 import rootReducer, { IRootState } from '../reducers'
 
-import rootSaga from '../sagas'
+import rootSaga from '../sagas/index'
 
 export function configureStore(initialState?: IRootState): Store<IRootState> {
 	const create = window.devToolsExtension
