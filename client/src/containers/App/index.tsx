@@ -21,7 +21,11 @@ export class App extends React.Component<App.IProps, App.IState> {
 		const room = this.props.chat.room
 
 		if (room === null) {
-			return <Homepage onCreateRoom={this.props.actions.createRoom} />
+			return (
+				<Homepage
+					onCreateRoom={() => this.props.actions.createRoomAsync()}
+				/>
+			)
 		} else {
 			return <Room id={room.id} />
 		}

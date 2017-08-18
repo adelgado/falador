@@ -5,7 +5,7 @@ const initialState: ChatStoreState = {
 	room: null
 }
 
-export default handleActions<ChatStoreState, TodoItemData>({
+export default handleActions<ChatStoreState, ChatActionPayload>({
 	[Actions.CREATE_ROOM]: (state, action) => {
 		const room: Room  = { id: Math.random() }
 		return {...state, room }

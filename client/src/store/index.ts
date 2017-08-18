@@ -1,16 +1,24 @@
-import { createStore, applyMiddleware, Store } from 'redux'
-import thunk from 'redux-thunk'
+import { applyMiddleware, createStore, Store } from 'redux'
+import createSagaMiddleware from 'redux-saga'
 import { logger } from '../middleware'
 import rootReducer, { IRootState } from '../reducers'
+
+import rootSaga from '../sagas'
 
 export function configureStore(initialState?: IRootState): Store<IRootState> {
 	const create = window.devToolsExtension
 		? window.devToolsExtension()(createStore)
 		: createStore
 
-	const createStoreWithMiddleware = applyMiddleware(thunk, logger)(create)
+	const sagaMiddleware = createSagaMiddleware()
 
-	const store = createStoreWithMiddleware(rootReducer, initialState) as Store<IRootState>
+	const store = create(
+		rootReducer,
+		initialState,
+		applyMiddleware(sagaMiddleware, logger)
+	) as Store<IRootState>
+
+	sagaMiddleware.run(rootSaga)
 
 	if (module.hot) {
 		module.hot.accept('../reducers', () => {
