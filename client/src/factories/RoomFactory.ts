@@ -1,4 +1,4 @@
-import Room from '../Room'
+import Room from '../models/Room'
 
 export default class RoomFactory {
 	static makeRoom(): Room {
