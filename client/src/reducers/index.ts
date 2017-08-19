@@ -1,10 +1,11 @@
 import { combineReducers } from 'redux'
-import chat from './chat'
-
-export interface IRootState {
-	chat: ChatStoreState
-}
+import { IRootState } from '../interfaces'
+import error from './error'
+import loading from './loading'
+import room from './room'
 
 export default combineReducers<IRootState>({
-	chat
+	error,
+	loading,
+	room
 })

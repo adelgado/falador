@@ -3,25 +3,34 @@ import { connect } from 'react-redux'
 import { RouteComponentProps } from 'react-router'
 import { bindActionCreators } from 'redux'
 import * as ChatActions from '../../actions/chat'
-import { Homepage, Loading, Room } from '../../components'
-import { IRootState } from '../../reducers'
+import { Error, Homepage, Loading, Room } from '../../components'
+import { IRootState } from '../../interfaces'
 
 export interface IProps extends RouteComponentProps<void> {
 	actions: typeof ChatActions
-	chat: ChatStoreState
+	state: IRootState
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
 export class App extends React.Component<IProps, {}> {
 	render(): JSX.Element {
-		const { chat } = this.props
+		const { state } = this.props
 
-		if (chat.loading) {
+		if (state.loading) {
 			return <Loading />
 		}
 
-		if (chat.room) {
-			return <Room id={chat.room.id} />
+		if (state.error) {
+			return (
+				<Error
+					message={state.error.message}
+					onRetry={() => this.props.actions.resetError()}
+				/>
+			)
+		}
+
+		if (state.room) {
+			return <Room id={state.room.id} />
 		}
 
 		return (
@@ -30,8 +39,8 @@ export class App extends React.Component<IProps, {}> {
 	}
 }
 
-function mapStateToProps(state: IRootState): { chat: ChatStoreState } {
-	return { chat: state.chat }
+function mapStateToProps(state: IRootState): { state: IRootState } {
+	return { state }
 }
 
 function mapDispatchToProps(dispatch: any): { actions: object } {

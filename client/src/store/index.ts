@@ -1,22 +1,32 @@
-import { applyMiddleware, createStore, Store } from 'redux'
+import { applyMiddleware, createStore, Store, StoreCreator } from 'redux'
 import createSagaMiddleware from 'redux-saga'
+import { IRootState } from '../interfaces'
 import { logger } from '../middleware'
-import rootReducer, { IRootState } from '../reducers'
+import rootReducer from '../reducers'
 
 import rootSaga from '../sagas/index'
 
 export function configureStore(initialState?: IRootState): Store<IRootState> {
-	const create = window.devToolsExtension
+	const create: StoreCreator = window.devToolsExtension
 		? window.devToolsExtension()(createStore)
 		: createStore
 
 	const sagaMiddleware = createSagaMiddleware()
 
-	const store = create(
-		rootReducer,
-		initialState,
-		applyMiddleware(sagaMiddleware, logger)
-	) as Store<IRootState>
+	let store: Store<IRootState>
+
+	if (initialState) {
+		store = create<IRootState>(
+			rootReducer,
+			initialState,
+			applyMiddleware(sagaMiddleware, logger)
+		)
+	} else {
+		store = create<IRootState>(
+			rootReducer,
+			applyMiddleware(sagaMiddleware, logger)
+		)
+	}
 
 	sagaMiddleware.run(rootSaga)
 
